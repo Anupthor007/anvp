@@ -48,16 +48,10 @@ export default function ContactPage() {
             href={link.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-5 p-5 rounded-lg border transition-all duration-200"
+            className="group flex items-center gap-5 p-5 rounded-lg border transition-all duration-200 hover:border-zinc-600"
             style={{
               backgroundColor: "var(--bg-card)",
               borderColor: "var(--border)",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "var(--border-hover)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
             }}
           >
             <div
@@ -72,7 +66,10 @@ export default function ContactPage() {
             </div>
 
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-display font-semibold" style={{ color: "var(--text-primary)" }}>
+              <p
+                className="text-sm font-display font-semibold"
+                style={{ color: "var(--text-primary)" }}
+              >
                 {link.label}
               </p>
               <p className="text-xs" style={{ color: "var(--text-muted)" }}>

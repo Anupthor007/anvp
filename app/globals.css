@@ -1,5 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap');
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --bg: #0a0a0a;
@@ -29,7 +30,7 @@ html {
 body {
   background-color: var(--bg);
   color: var(--text-primary);
-  font-family: 'DM Mono', monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 14px;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
@@ -58,7 +59,7 @@ footer {
 
 /* Display font for headings */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display), sans-serif;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-primary);
@@ -121,7 +122,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 4px;
   font-size: 11px;
   color: var(--text-secondary);
-  font-family: 'DM Mono', monospace;
+  font-family: var(--font-mono), monospace;
   letter-spacing: 0.03em;
   transition: border-color 0.2s, color 0.2s;
 }

@@ -15,14 +15,8 @@ export default function Footer() {
             href={profile.social_links.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs transition-colors"
+            className="text-xs transition-colors hover:text-white"
             style={{ color: "var(--text-muted)" }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.color = "var(--text-primary)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = "var(--text-muted)")
-            }
           >
             github
           </a>
@@ -30,14 +24,8 @@ export default function Footer() {
             href={profile.social_links.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs transition-colors"
+            className="text-xs transition-colors hover:text-white"
             style={{ color: "var(--text-muted)" }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.color = "var(--text-primary)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = "var(--text-muted)")
-            }
           >
             linkedin
           </a>

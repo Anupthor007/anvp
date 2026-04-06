@@ -12,14 +12,6 @@ export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
       style={{
         backgroundColor: "var(--bg-card)",
         borderColor: "var(--border)",
-        animationDelay: `${index * 0.1}s`,
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.borderColor =
-          "var(--border-hover)";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
       }}
     >
       {/* Header */}

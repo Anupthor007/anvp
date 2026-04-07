@@ -1,6 +1,6 @@
 ---
 title: "Building a RAG Pipeline from Scratch: What I Learned"
-date: "2025-06-01"
+date: "2025-11-23"
 description: "A practical walkthrough of building a Retrieval-Augmented Generation system — what worked, what didn't, and why RAG is one of the most useful patterns in production AI."
 tags: ["RAG", "AI Engineering", "LangChain", "LLMs"]
 ---
@@ -68,12 +68,10 @@ scores = reranker.predict([[query, chunk] for chunk in retrieved_chunks])
 
 - **Metadata filtering** — store document source, date, type as metadata and filter before embedding search
 - **Hybrid search** — combine BM25 (keyword) with vector search for better recall
-- **Eval from the start** — I built the system first and evaluated later. Big mistake. Define your eval metrics (faithfulness, relevance, answer correctness) before building.
+- **Eval from the start** — I built the system first and evaluated later. Big mistake. Define your eval metrics before building.
 
 ## Final Thoughts
 
 RAG is not magic. It's a pipeline, and every stage has failure modes. The teams shipping reliable RAG systems are the ones who treat it as an engineering problem, not a prompt engineering problem.
-
-The chunking, retrieval quality, and prompt design all matter equally.
 
 Start simple, measure everything, improve iteratively.

@@ -1,16 +1,16 @@
 import { getPostBySlug, getAllPosts } from "@/lib/blog";
 import { notFound } from "next/navigation";
 import Link from "next/link";
- 
+
 interface Props {
   params: { slug: string };
 }
- 
+
 export async function generateStaticParams() {
   const posts = getAllPosts();
   return posts.map((post) => ({ slug: post.slug }));
 }
- 
+
 export async function generateMetadata({ params }: Props) {
   const post = await getPostBySlug(params.slug);
   if (!post) return {};
@@ -19,12 +19,12 @@ export async function generateMetadata({ params }: Props) {
     description: post.description,
   };
 }
- 
+
 export default async function BlogPostPage({ params }: Props) {
   const post = await getPostBySlug(params.slug);
- 
+
   if (!post) notFound();
- 
+
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
       <Link
@@ -34,7 +34,7 @@ export default async function BlogPostPage({ params }: Props) {
       >
         ← back to blog
       </Link>
- 
+
       <header className="mb-12">
         <div className="flex flex-wrap gap-2 mb-4">
           {post.tags.map((tag) => (
@@ -43,14 +43,14 @@ export default async function BlogPostPage({ params }: Props) {
             </span>
           ))}
         </div>
- 
+
         <h1
           className="text-4xl font-display font-bold tracking-tight mb-4 leading-tight"
           style={{ color: "var(--text-primary)" }}
         >
           {post.title}
         </h1>
- 
+
         <p className="text-xs" style={{ color: "var(--text-muted)" }}>
           {new Date(post.date).toLocaleDateString("en-US", {
             year: "numeric",
@@ -59,14 +59,14 @@ export default async function BlogPostPage({ params }: Props) {
           })}
         </p>
       </header>
- 
+
       <hr style={{ borderColor: "var(--border)" }} className="mb-10" />
- 
+
       <article
         className="prose-dark"
         dangerouslySetInnerHTML={{ __html: post.content }}
       />
- 
+
       <div className="mt-16 pt-8 border-t" style={{ borderColor: "var(--border)" }}>
         <Link
           href="/blog"
@@ -79,4 +79,3 @@ export default async function BlogPostPage({ params }: Props) {
     </div>
   );
 }
- 

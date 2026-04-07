@@ -15,6 +15,10 @@
   --accent-dim: #444444;
   --green: #4ade80;
   --green-dim: #166534;
+  --dot-offset-x: 0px;
+  --dot-offset-y: 0px;
+  --dot-drift-x: 0px;
+  --dot-drift-y: 0px;
 }
 
 * {
@@ -44,9 +48,23 @@ body::before {
   inset: 0;
   background-image: radial-gradient(circle, #1f1f1f 1px, transparent 1px);
   background-size: 28px 28px;
+  transform: translate3d(
+    calc(var(--dot-offset-x) + var(--dot-drift-x)),
+    calc(var(--dot-offset-y) + var(--dot-drift-y)),
+    0
+  );
+  transition: transform 120ms linear;
+  will-change: transform;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.5;
+  opacity: 0.52;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    transition: none;
+    transform: none;
+  }
 }
 
 /* All content above the dot grid */

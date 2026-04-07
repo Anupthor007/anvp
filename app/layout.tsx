@@ -3,6 +3,7 @@ import { DM_Mono, Syne } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import DotGridMotion from "@/components/DotGridMotion";
 import { profile } from "@/data/profile";
 
 const dmMono = DM_Mono({
@@ -37,6 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className={`${dmMono.variable} ${syne.variable}`}>
       <body>
+        <DotGridMotion />
         <div className="min-h-screen flex flex-col relative z-10">
           <Navbar />
           <main className="flex-1">{children}</main>

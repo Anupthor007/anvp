@@ -42,7 +42,7 @@ export default function AboutPage() {
             borderColor: "var(--border)",
           }}
         >
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p
                 className="font-display font-semibold"
@@ -54,7 +54,7 @@ export default function AboutPage() {
                 {profile.education.institution}
               </p>
             </div>
-            <span className="text-xs shrink-0 ml-4" style={{ color: "var(--text-muted)" }}>
+            <span className="text-xs shrink-0 sm:ml-4" style={{ color: "var(--text-muted)" }}>
               {profile.education.duration}
             </span>
           </div>

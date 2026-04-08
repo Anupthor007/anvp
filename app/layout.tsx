@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Mono, Syne } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
@@ -29,6 +29,12 @@ export const metadata: Metadata = {
     description: profile.short_bio,
     type: "website",
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

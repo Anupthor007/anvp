@@ -44,11 +44,11 @@ export default function BlogPage() {
             <Link
               key={post.slug}
               href={`/blog/${post.slug}`}
-              className="group flex items-start gap-6 py-5 border-b transition-all"
+              className="group flex flex-col gap-3 py-5 border-b transition-all sm:flex-row sm:items-start sm:gap-6"
               style={{ borderColor: "var(--border)" }}
             >
               <span
-                className="text-xs shrink-0 w-24 mt-0.5"
+                className="text-xs shrink-0 sm:w-24 sm:mt-0.5"
                 style={{ color: "var(--text-muted)" }}
               >
                 {new Date(post.date).toLocaleDateString("en-US", {
@@ -81,7 +81,7 @@ export default function BlogPage() {
               </div>
 
               <span
-                className="text-xs mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="hidden text-xs mt-0.5 opacity-0 transition-opacity group-hover:opacity-100 sm:inline"
                 style={{ color: "var(--text-muted)" }}
               >
                 →

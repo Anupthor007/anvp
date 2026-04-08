@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LoadingScreen from "@/components/LoadingScreen";
+import EtherealBackground from "@/components/ui/EtherealBackground";
 import { profile } from "@/data/profile";
 
 const dmMono = DM_Mono({
@@ -37,9 +38,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${dmMono.variable} ${syne.variable}`}>
-      <body>
+      <body className="relative">
         <LoadingScreen />
-        <div className="min-h-screen flex flex-col">
+        <EtherealBackground />
+        <div className="relative z-10 min-h-screen flex flex-col">
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />

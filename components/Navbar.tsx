@@ -21,10 +21,11 @@ export default function Navbar() {
       <nav
         className="sticky top-0 z-50 border-b"
         style={{
-          borderColor: "var(--border)",
-          backgroundColor: "rgba(10,10,10,0.88)",
-          backdropFilter: "blur(16px)",
-          WebkitBackdropFilter: "blur(16px)",
+          borderColor: "rgba(255,255,255,0.08)",
+          backgroundColor: "rgba(8,8,8,0.82)",
+          backdropFilter: "saturate(120%) blur(22px)",
+          WebkitBackdropFilter: "saturate(120%) blur(22px)",
+          boxShadow: "0 10px 26px rgba(0,0,0,0.34)",
         }}
       >
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">

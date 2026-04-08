@@ -1,10 +1,81 @@
 "use client";
 
-import { memo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { memo, useEffect, useRef, useState } from "react";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from "framer-motion";
 
 function EtherealBackground() {
   const prefersReducedMotion = useReducedMotion();
+  const [lowEndMode] = useState(() => {
+    if (typeof navigator === "undefined") return false;
+
+    const nav = navigator as Navigator & { deviceMemory?: number };
+    const lowCpu = nav.hardwareConcurrency > 0 && nav.hardwareConcurrency <= 4;
+    const lowMemory = typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4;
+
+    return lowCpu || lowMemory;
+  });
+
+  const parallaxX = useMotionValue(0);
+  const parallaxY = useMotionValue(0);
+  const parallaxXInverse = useTransform(parallaxX, (v) => -v * 0.4);
+  const parallaxYInverse = useTransform(parallaxY, (v) => -v * 0.4);
+
+  const cursorX = useMotionValue(0);
+  const cursorY = useMotionValue(0);
+  const clusterOpacity = useMotionValue(0);
+  const clusterTranslateX = useTransform(cursorX, (v) => v - 110);
+  const clusterTranslateY = useTransform(cursorY, (v) => v - 110);
+  const rafPending = useRef(false);
+
+  useEffect(() => {
+    const centerX = window.innerWidth * 0.5;
+    const centerY = window.innerHeight * 0.5;
+    cursorX.set(centerX);
+    cursorY.set(centerY);
+
+    if (prefersReducedMotion || lowEndMode) {
+      parallaxX.set(0);
+      parallaxY.set(0);
+      clusterOpacity.set(0);
+      return;
+    }
+
+    const onMouseMove = (event: MouseEvent) => {
+      if (rafPending.current) return;
+      rafPending.current = true;
+
+      window.requestAnimationFrame(() => {
+        const xRatio = event.clientX / window.innerWidth - 0.5;
+        const yRatio = event.clientY / window.innerHeight - 0.5;
+
+        parallaxX.set(xRatio * 18);
+        parallaxY.set(yRatio * 18);
+        cursorX.set(event.clientX);
+        cursorY.set(event.clientY);
+        clusterOpacity.set(0.36);
+        rafPending.current = false;
+      });
+    };
+
+    const onMouseLeave = () => {
+      parallaxX.set(0);
+      parallaxY.set(0);
+      clusterOpacity.set(0);
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseleave", onMouseLeave);
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseleave", onMouseLeave);
+    };
+  }, [prefersReducedMotion, lowEndMode, parallaxX, parallaxY, cursorX, cursorY, clusterOpacity]);
 
   return (
     <div
@@ -16,96 +87,156 @@ function EtherealBackground() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(1200px 700px at 20% 10%, rgba(255, 255, 255, 0.09), transparent 56%), radial-gradient(1000px 650px at 80% 20%, rgba(210, 210, 210, 0.07), transparent 60%), radial-gradient(900px 600px at 50% 85%, rgba(165, 165, 165, 0.055), transparent 62%), linear-gradient(180deg, rgba(10, 10, 10, 0.9), rgba(12, 12, 12, 0.92))",
+            "radial-gradient(130% 80% at 50% 0%, rgba(255, 255, 255, 0.05), transparent 65%), linear-gradient(180deg, #070707 0%, #0b0b0b 45%, #070707 100%)",
         }}
       />
 
       <motion.div
-        className="absolute -left-28 -top-28 h-[30rem] w-[30rem] rounded-full"
+        className="absolute -inset-[12%]"
         style={{
-          background:
-            "radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.2), rgba(108, 108, 108, 0.1) 46%, rgba(0, 0, 0, 0) 72%)",
-          filter: "blur(60px)",
+          x: parallaxX,
+          y: parallaxY,
+          opacity: lowEndMode ? 0.22 : 0.3,
           willChange: "transform, opacity",
         }}
-        animate={
-          prefersReducedMotion
-            ? { opacity: 0.52 }
-            : {
-                x: [0, 90, -40, 0],
-                y: [0, 55, 30, 0],
-                scale: [1, 1.08, 0.96, 1],
-                opacity: [0.46, 0.6, 0.4, 0.46],
-              }
-        }
-        transition={
-          prefersReducedMotion
-            ? undefined
-            : {
-                duration: 24,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }
-        }
-      />
+        transition={{ type: "spring", stiffness: 26, damping: 28, mass: 0.6 }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at center, rgba(210, 210, 210, 0.42) 1px, transparent 1.25px)",
+            backgroundSize: "26px 26px",
+            backgroundPosition: "0 0",
+            willChange: "transform",
+            animation: prefersReducedMotion
+              ? "none"
+              : lowEndMode
+                ? "dotDriftALite 48s ease-in-out infinite"
+                : "dotDriftA 34s ease-in-out infinite",
+          }}
+        />
+      </motion.div>
 
       <motion.div
-        className="absolute -right-24 top-1/4 h-[28rem] w-[28rem] rounded-full"
+        className="absolute -inset-[14%]"
         style={{
-          background:
-            "radial-gradient(circle at 60% 40%, rgba(242, 242, 242, 0.17), rgba(88, 88, 88, 0.09) 46%, rgba(0, 0, 0, 0) 72%)",
-          filter: "blur(64px)",
+          x: parallaxXInverse,
+          y: parallaxYInverse,
+          opacity: lowEndMode ? 0.12 : 0.18,
           willChange: "transform, opacity",
         }}
-        animate={
-          prefersReducedMotion
-            ? { opacity: 0.48 }
-            : {
-                x: [0, -70, 45, 0],
-                y: [0, 50, -25, 0],
-                scale: [1, 0.94, 1.04, 1],
-                opacity: [0.42, 0.56, 0.35, 0.42],
-              }
-        }
-        transition={
-          prefersReducedMotion
-            ? undefined
-            : {
-                duration: 27,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }
-        }
+        transition={{ type: "spring", stiffness: 24, damping: 30, mass: 0.7 }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at center, rgba(245, 245, 245, 0.24) 0.8px, transparent 1.2px)",
+            backgroundSize: "38px 38px",
+            backgroundPosition: "18px 12px",
+            willChange: "transform",
+            animation: prefersReducedMotion
+              ? "none"
+              : lowEndMode
+                ? "dotDriftBLite 60s ease-in-out infinite"
+                : "dotDriftB 46s ease-in-out infinite",
+          }}
+        />
+      </motion.div>
+
+      {!prefersReducedMotion && !lowEndMode && (
+        <motion.div
+          className="absolute h-[220px] w-[220px] rounded-full"
+          style={{
+            x: clusterTranslateX,
+            y: clusterTranslateY,
+            opacity: clusterOpacity,
+            backgroundImage:
+              "radial-gradient(circle at center, rgba(255, 255, 255, 0.52) 1.2px, transparent 1.55px)",
+            backgroundSize: "16px 16px",
+            boxShadow: "0 0 28px rgba(255, 255, 255, 0.08)",
+            willChange: "transform, opacity",
+          }}
+          transition={{ type: "spring", stiffness: 40, damping: 24, mass: 0.45 }}
+        />
+      )}
+
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(120% 90% at 50% 50%, transparent 48%, rgba(0, 0, 0, 0.3) 100%)",
+        }}
       />
 
-      <motion.div
-        className="absolute left-1/3 bottom-[-11rem] h-[27rem] w-[27rem] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle at 45% 30%, rgba(228, 228, 228, 0.16), rgba(80, 80, 80, 0.085) 47%, rgba(0, 0, 0, 0) 73%)",
-          filter: "blur(68px)",
-          willChange: "transform, opacity",
-        }}
-        animate={
-          prefersReducedMotion
-            ? { opacity: 0.46 }
-            : {
-                x: [0, 40, -35, 0],
-                y: [0, -40, -10, 0],
-                scale: [1, 1.06, 0.95, 1],
-                opacity: [0.38, 0.5, 0.32, 0.38],
-              }
+      <style jsx>{`
+        @keyframes dotDriftA {
+          0% {
+            transform: translate3d(0, 0, 0);
+          }
+          25% {
+            transform: translate3d(26px, -16px, 0);
+          }
+          50% {
+            transform: translate3d(-18px, 14px, 0);
+          }
+          75% {
+            transform: translate3d(12px, 24px, 0);
+          }
+          100% {
+            transform: translate3d(0, 0, 0);
+          }
         }
-        transition={
-          prefersReducedMotion
-            ? undefined
-            : {
-                duration: 29,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }
+
+        @keyframes dotDriftB {
+          0% {
+            transform: translate3d(0, 0, 0);
+          }
+          20% {
+            transform: translate3d(-22px, 10px, 0);
+          }
+          45% {
+            transform: translate3d(18px, -18px, 0);
+          }
+          70% {
+            transform: translate3d(-10px, -8px, 0);
+          }
+          100% {
+            transform: translate3d(0, 0, 0);
+          }
         }
-      />
+
+        @keyframes dotDriftALite {
+          0% {
+            transform: translate3d(0, 0, 0);
+          }
+          30% {
+            transform: translate3d(12px, -8px, 0);
+          }
+          65% {
+            transform: translate3d(-10px, 8px, 0);
+          }
+          100% {
+            transform: translate3d(0, 0, 0);
+          }
+        }
+
+        @keyframes dotDriftBLite {
+          0% {
+            transform: translate3d(0, 0, 0);
+          }
+          35% {
+            transform: translate3d(-10px, 6px, 0);
+          }
+          70% {
+            transform: translate3d(8px, -7px, 0);
+          }
+          100% {
+            transform: translate3d(0, 0, 0);
+          }
+        }
+      `}</style>
     </div>
   );
 }

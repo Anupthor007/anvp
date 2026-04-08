@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Inter } from "next/font/google";
 import { profile } from "@/data/profile";
 import ProjectCard from "@/components/ProjectCard";
+import CommandSnippet from "@/components/CommandSnippet";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -13,7 +14,7 @@ export default function Home() {
   const featuredProjects = profile.projects.filter((p) => p.featured);
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-20 md:py-28 space-y-32">
+    <div className="max-w-4xl mx-auto px-6 pt-8 pb-20 md:pt-10 md:pb-28 space-y-32">
 
       {/* ── HERO ── */}
       <section className="space-y-8">
@@ -54,6 +55,11 @@ export default function Home() {
           >
             {profile.title}
           </p>
+
+          <CommandSnippet
+            helperText="Run this in your terminal to know more."
+            command="npx anuppp"
+          />
         </div>
 
         {/* Bio */}

@@ -8,58 +8,56 @@ interface ProjectCardProps {
 export default function ProjectCard({ project, index = 0 }: ProjectCardProps) {
   return (
     <div
-      className="group p-6 rounded-lg border transition-all duration-300"
+      className="card-hover p-6 md:p-8 rounded-xl border"
       style={{
         backgroundColor: "var(--bg-card)",
         borderColor: "var(--border)",
       }}
     >
-      {/* Header */}
-      <div className="flex items-start justify-between mb-3">
+      <div className="flex items-start justify-between mb-4">
         <h3
-          className="font-display font-semibold text-base leading-tight"
-          style={{ color: "var(--text-primary)" }}
+          style={{
+            fontFamily: "var(--syne)",
+            fontWeight: 700,
+            fontSize: "1.05rem",
+            letterSpacing: "-0.02em",
+            color: "var(--text-primary)",
+            lineHeight: 1.3,
+          }}
         >
           {project.name}
         </h3>
         <span
-          className="text-xs ml-4 mt-0.5 shrink-0"
-          style={{ color: "var(--text-muted)" }}
+          className="shrink-0 ml-4 text-xs mt-0.5"
+          style={{ color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}
         >
           #{String(index + 1).padStart(2, "0")}
         </span>
       </div>
 
-      {/* Description */}
       <p
-        className="text-xs leading-relaxed mb-4"
-        style={{ color: "var(--text-secondary)" }}
+        className="mb-5 leading-relaxed"
+        style={{ color: "var(--text-secondary)", fontSize: "14px" }}
       >
         {project.description}
       </p>
 
-      {/* Highlights */}
-      <ul className="mb-4 space-y-1">
+      <ul className="mb-5 space-y-2">
         {project.highlights.map((h, i) => (
           <li
             key={i}
-            className="text-xs flex items-start gap-2"
-            style={{ color: "var(--text-muted)" }}
+            className="flex items-start gap-2.5"
+            style={{ color: "var(--text-muted)", fontSize: "13px" }}
           >
-            <span style={{ color: "var(--green)" }} className="mt-0.5 shrink-0">
-              ›
-            </span>
+            <span style={{ color: "var(--green)", marginTop: "2px", flexShrink: 0 }}>›</span>
             {h}
           </li>
         ))}
       </ul>
 
-      {/* Tech stack */}
-      <div className="flex flex-wrap gap-2 mt-auto">
+      <div className="flex flex-wrap gap-2">
         {project.tech_stack.map((tech) => (
-          <span key={tech} className="tag">
-            {tech}
-          </span>
+          <span key={tech} className="tag">{tech}</span>
         ))}
       </div>
     </div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { profile } from "@/data/profile";
+import { useState } from "react";
 
 const navLinks = [
   { href: "/", label: "home" },
@@ -14,59 +14,137 @@ const navLinks = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav
-      className="sticky top-0 z-50 border-b"
-      style={{
-        borderColor: "var(--border)",
-        backgroundColor: "rgba(10, 10, 10, 0.85)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
-      }}
-    >
-      <div className="max-w-3xl mx-auto px-6 py-4 flex items-center justify-between">
-        {/* Logo */}
-        <Link
-          href="/"
-          className="font-display font-bold text-base tracking-tight"
-          style={{ color: "var(--text-primary)" }}
-        >
-          {profile.name.split(" ")[0].toLowerCase()}
-          <span style={{ color: "var(--text-muted)" }}>
-            .{profile.name.split(" ")[1].toLowerCase()}
-          </span>
-        </Link>
+    <>
+      <nav
+        className="sticky top-0 z-50 border-b"
+        style={{
+          borderColor: "var(--border)",
+          backgroundColor: "rgba(10,10,10,0.88)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+        }}
+      >
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          {/* Logo */}
+          <Link
+            href="/"
+            style={{
+              fontFamily: "var(--font-display)",
+              fontWeight: 700,
+              fontSize: "1rem",
+              color: "var(--text-primary)",
+              textDecoration: "none",
+              letterSpacing: "-0.02em",
+            }}
+          >
+            anup
+            <span style={{ color: "var(--text-muted)" }}>.thorat</span>
+          </Link>
 
-        {/* Nav links */}
-        <div className="flex items-center gap-6">
-          {navLinks.map((link) => {
-            const isActive =
-              link.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(link.href);
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-7">
+            {navLinks.map((link) => {
+              const isActive =
+                link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  style={{
+                    fontSize: "13px",
+                    color: isActive ? "var(--text-primary)" : "var(--text-muted)",
+                    textDecoration: "none",
+                    fontFamily: "var(--font-mono)",
+                    transition: "color 0.2s",
+                  }}
+                >
+                  {isActive && (
+                    <span style={{ color: "var(--green)", marginRight: "4px" }}>›</span>
+                  )}
+                  {link.label}
+                </Link>
+              );
+            })}
+          </div>
 
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="text-xs transition-colors duration-200"
-                style={{
-                  color: isActive
-                    ? "var(--text-primary)"
-                    : "var(--text-muted)",
-                  fontFamily: "var(--font-mono, monospace)",
-                }}
-              >
-                {isActive && (
-                  <span style={{ color: "var(--green)" }}>{">"} </span>
-                )}
-                {link.label}
-              </Link>
-            );
-          })}
+          {/* Mobile hamburger */}
+          <button
+            className="md:hidden flex flex-col gap-1.5 p-1"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+          >
+            <span
+              style={{
+                display: "block",
+                width: "22px",
+                height: "1.5px",
+                background: "var(--text-secondary)",
+                transition: "transform 0.2s",
+                transform: menuOpen ? "rotate(45deg) translate(3px, 3px)" : "none",
+              }}
+            />
+            <span
+              style={{
+                display: "block",
+                width: "22px",
+                height: "1.5px",
+                background: "var(--text-secondary)",
+                opacity: menuOpen ? 0 : 1,
+                transition: "opacity 0.2s",
+              }}
+            />
+            <span
+              style={{
+                display: "block",
+                width: "22px",
+                height: "1.5px",
+                background: "var(--text-secondary)",
+                transition: "transform 0.2s",
+                transform: menuOpen ? "rotate(-45deg) translate(3px, -3px)" : "none",
+              }}
+            />
+          </button>
         </div>
-      </div>
-    </nav>
+
+        {/* Mobile menu */}
+        {menuOpen && (
+          <div
+            className="md:hidden border-t px-6 py-5 flex flex-col gap-4"
+            style={{
+              borderColor: "var(--border)",
+              backgroundColor: "rgba(10,10,10,0.97)",
+            }}
+          >
+            {navLinks.map((link) => {
+              const isActive =
+                link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    fontSize: "15px",
+                    color: isActive ? "var(--text-primary)" : "var(--text-muted)",
+                    textDecoration: "none",
+                    fontFamily: "var(--font-mono)",
+                    paddingBottom: "4px",
+                    borderBottom: "1px solid var(--border)",
+                  }}
+                >
+                  {isActive && (
+                    <span style={{ color: "var(--green)", marginRight: "6px" }}>›</span>
+                  )}
+                  {link.label}
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </nav>
+    </>
   );
 }

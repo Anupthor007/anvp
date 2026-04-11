@@ -1,11 +1,6 @@
----
-title: "Running LLMs Locally vs API: What I Actually Observed"
-date: "2026-04-11"
-description: "I tested running LLaMA 3 locally via Ollama against Gemini's free API — same prompts, honest results. Here's what actually changes when you move from API-based models to local ones."
-tags: ["Local LLMs", "Ollama", "AI Engineering", "Gemini API"]
----
+# Running LLMs Locally vs API: What I Actually Observed
 
-I've been experimenting with running LLMs locally for a while now, mostly out of curiosity at first. The idea sounds great — no API costs, full control, privacy — but I wanted to see how it actually holds up when compared to using an API.
+I’ve been experimenting with running LLMs locally for a while now, mostly out of curiosity at first. The idea sounds great, no API costs, full control, privacy, but I wanted to see how it actually holds up when compared to using an API.
 
 So instead of just reading benchmarks online, I decided to test things myself and document what really changes when you move from API-based models to local ones.
 
@@ -15,13 +10,13 @@ So instead of just reading benchmarks online, I decided to test things myself an
 
 Most tutorials make local LLMs sound like a perfect replacement. But in reality, the question is not:
 
-"Can you run LLMs locally?"
+> “Can you run LLMs locally?”
 
-It's:
+It’s:
 
-"Should you run them locally for your use case?"
+> “Should you run them locally for your use case?”
 
-That's what I wanted to answer.
+That’s what I wanted to answer.
 
 ---
 
@@ -29,26 +24,38 @@ That's what I wanted to answer.
 
 ### Local Model Setup
 
-- Tool: Ollama
-- Model: LLaMA 3 (8B)
-- Hardware: CPU-based (no GPU)
-- RAM: 16GB
+* Tool: Ollama
+* Model: LLaMA 3 (8B)
+* Hardware: CPU-based (no GPU)
+* RAM: 16GB
+
+Command I used:
 
 ```bash
 ollama run llama3
 ```
 
+---
+
 ### API Setup (Gemini - Free Tier)
+
+Since I don’t have paid API access, I used Google Gemini’s free API.
+
+Install:
 
 ```bash
 pip install google-generativeai
 ```
 
+Code:
+
 ```python
 import google.generativeai as genai
 
 genai.configure(api_key="YOUR_GEMINI_API_KEY")
+
 model = genai.GenerativeModel("gemini-pro")
+
 response = model.generate_content("Explain what RAG is in simple terms")
 print(response.text)
 ```
@@ -57,25 +64,56 @@ print(response.text)
 
 ## What I Tested
 
-Same prompts for both local and API across four areas: basic Q&A, code generation, long responses, and latency.
+I kept things simple and practical:
+
+1. Basic Q&A
+2. Code generation
+3. Long responses
+4. Latency (response time)
+
+Same prompts for both local and API.
 
 ---
 
 ## 1. Response Speed
 
-**Local (CPU):** First response takes 8–15 seconds. Streaming is slow but steady. Feels laggy for longer prompts.
+### Local (CPU)
 
-**Gemini API:** Response in 1–3 seconds. Much smoother.
+* First response: ~8–15 seconds
+* Streaming: slow but steady
+* Feels laggy for longer prompts
 
-Local models feel like you're "waiting for thinking." APIs feel instant.
+### Gemini API
+
+* Response: ~1–3 seconds
+* Much smoother
+
+### My Take:
+
+Local models feel like you're “waiting for thinking”
+APIs feel instant
 
 ---
 
 ## 2. Output Quality
 
-**Prompt:** "Write a Python function to detect palindrome"
+### Prompt:
 
-Local output was correct but slightly less structured, sometimes missing edge cases. Gemini output was cleaner with better formatting:
+> “Write a Python function to detect palindrome”
+
+### Local Output:
+
+* Correct logic
+* Slightly less structured
+* Sometimes misses edge cases
+
+### Gemini Output:
+
+* Cleaner code
+* Better formatting
+* Handles edge cases better
+
+Example (Gemini-style output):
 
 ```python
 def is_palindrome(s):
@@ -83,69 +121,168 @@ def is_palindrome(s):
     return s == s[::-1]
 ```
 
-Local models are decent. APIs are more reliable for production-quality output.
+### My Take:
+
+Local models are decent
+APIs are more reliable
 
 ---
 
 ## 3. Handling Complex Prompts
 
-**Prompt:** "Explain RAG with architecture and use cases"
+### Prompt:
 
-Local gives a reasonable explanation but sometimes lacks depth and repeats phrases. Gemini produces a more structured, complete answer with better flow.
+> “Explain RAG with architecture and use cases”
+
+### Local:
+
+* Gives explanation
+* Lacks depth sometimes
+* Repeats phrases
+
+### Gemini:
+
+* Structured answer
+* Better explanation flow
+* More “complete”
 
 ---
 
 ## 4. Cost
 
-- **Local:** ₹0 per request, one-time hardware cost
-- **Gemini free tier:** Free with rate limits
-- **Paid APIs:** Cost scales with usage
+### Local:
 
-If you're experimenting → local is great. If you're building a product → API reliability matters more than cost at early stages.
+* ₹0 per request
+* One-time hardware cost
+
+### Gemini (Free Tier):
+
+* Free (with limits)
+
+### Paid APIs (general idea):
+
+* Cost increases with usage
+
+### My Take:
+
+If you're experimenting → local is great
+If you're building product → API matters
 
 ---
 
 ## 5. Privacy & Control
 
-This is where local models win clearly. Your data never leaves your machine. With APIs, every request goes to external servers — a real constraint for sensitive data.
+This is where local models win clearly.
+
+### Local:
+
+* Data stays on your machine
+* Full control
+
+### API:
+
+* Data goes to external servers
 
 ---
 
 ## Where Local LLMs Actually Make Sense
 
-After testing, local models are not replacements — they're tools for specific scenarios.
+After testing, I realized local models are not replacements — they’re tools for specific scenarios.
 
-Use local LLMs when you care about privacy, need offline AI, are experimenting, or building internal tools where data sensitivity is high.
+Use local LLMs when:
+
+* You care about privacy
+* You want offline AI
+* You’re experimenting
+* You’re building internal tools
 
 ---
 
 ## Where APIs Still Win
 
-Use APIs when you need reliability, better response quality, speed, or are building user-facing applications where consistency matters.
+Use APIs when:
+
+* You need reliability
+* You want better responses
+* You’re building user-facing apps
+* You care about speed
 
 ---
 
-## The Real Problem No One Talks About
+## Real Problem No One Talks About
 
-Running locally is not just "run and done." You deal with model size vs RAM constraints, slow inference on CPU, setup issues, and inconsistent outputs. This is where most tutorials stop — but this is where real work starts.
+Running locally is not just “run and done”.
+
+You deal with:
+
+* model size vs RAM
+* slow inference
+* setup issues
+* inconsistent outputs
+
+This is where most tutorials stop, but this is where real work starts.
 
 ---
 
-## What I'd Do Now
+## What I’d Do Now (My Approach)
 
-Instead of choosing one, combine both:
+Instead of choosing one, I’d combine both:
 
-- **Local model** → experimentation, offline tools, privacy-sensitive workflows
-- **API** → production, better UX, anything user-facing
+* Local model → experimentation, offline tools
+* API → production, better UX
 
-This hybrid approach makes the most sense for most teams.
+This hybrid approach makes more sense.
 
 ---
 
 ## Final Thoughts
 
-Before trying this, I thought local LLMs might replace APIs completely. Now I think they're more like a sandbox, a control layer, and a privacy-first option — not a full replacement. APIs are still faster, more reliable, and easier to scale.
+Before trying this, I thought local LLMs might replace APIs completely.
 
-Don't overcomplicate it. Try Ollama locally, use the Gemini free API, compare yourself. That's the best way to actually understand the tradeoff.
+Now I think:
 
-I'll be experimenting more with quantized models, GPU setups, and hybrid pipelines. If I find something interesting, I'll write about it.
+> Local LLMs are powerful, but not yet a full replacement.
+
+They are more like:
+
+* a sandbox
+* a control layer
+* a privacy-first option
+
+And APIs are still:
+
+* faster
+* more reliable
+* easier to scale
+
+---
+
+## If You're Starting
+
+Don’t overcomplicate it.
+
+Start with:
+
+1. Try Ollama locally
+2. Use Gemini free API
+3. Compare yourself
+
+That’s the best way to understand.
+
+---
+
+## What I Learned
+
+* Running models locally changes how you think about AI systems
+* Infrastructure matters as much as models
+* Real-world performance ≠ benchmark results
+
+---
+
+I’ll probably experiment more with:
+
+* quantized models
+* GPU setups
+* hybrid pipelines
+
+If I find something interesting, I’ll write about it.

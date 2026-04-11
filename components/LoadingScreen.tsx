@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 
 const words = [
   { text: "Hello", lang: "en" },
-  { text: "नमस्ते", lang: "hi" },
-  { text: "नमस्कार", lang: "hi" },
 ];
 
 export default function LoadingScreen() {

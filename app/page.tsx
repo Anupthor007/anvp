@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { profile } from "@/data/profile";
 import ProjectCard from "@/components/ProjectCard";
 import CommandSnippet from "@/components/CommandSnippet";
+import TypedName from "@/components/TypedName";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -42,7 +43,7 @@ export default function Home() {
               marginBottom: "0.5rem",
             }}
           >
-            {profile.name}
+            <TypedName text={profile.name} />
           </h1>
           <p
             style={{

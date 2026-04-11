@@ -123,6 +123,11 @@ h1, h2, h3, h4, h5, h6 {
   to   { opacity: 1; }
 }
 
+@keyframes blinkCaret {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
 .fade-up   { animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) both; }
 .fade-up-1 { animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
 .fade-up-2 { animation: fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.25s both; }

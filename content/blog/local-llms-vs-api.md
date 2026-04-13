@@ -1,3 +1,10 @@
+---
+title: "Running LLMs Locally vs API: What I Actually Observed"
+date: "2026-04-05"
+description: "I tested running LLaMA 3 locally via Ollama against Gemini's free API - same prompts, honest results. Here's what actually changes when you move from API-based models to local ones."
+tags: ["Local LLMs", "Ollama", "AI Engineering", "Gemini API"]
+---
+
 # Running LLMs Locally vs API: What I Actually Observed
 
 I’ve been experimenting with running LLMs locally for a while now, mostly out of curiosity at first. The idea sounds great, no API costs, full control, privacy, but I wanted to see how it actually holds up when compared to using an API.

@@ -1,71 +1,151 @@
 ---
-title: "Running LLMs Locally: A Practical Guide to On-Premises AI"
-date: "2026-01-18"
-description: "Cloud APIs are convenient but they're not always the right answer. Here's everything I've learned about running large language models locally — hardware, tools, tradeoffs."
-tags: ["Local LLMs", "On-Premises AI", "Ollama", "AI Engineering"]
+title: "Running LLMs Locally vs API: What I Actually Observed"
+date: "2026-04-11"
+description: "I tested running LLaMA 3 locally via Ollama against Gemini's free API — same prompts, honest results. Here's what actually changes when you move from API-based models to local ones."
+tags: ["Local LLMs", "Ollama", "AI Engineering", "Gemini API"]
 ---
 
-## Why Run Locally?
+I've been experimenting with running LLMs locally for a while now, mostly out of curiosity at first. The idea sounds great — no API costs, full control, privacy — but I wanted to see how it actually holds up when compared to using an API.
 
-The default answer for most developers is to call an API. OpenAI, Anthropic, Gemini — pick one, get an API key, start building. It works and it's fast to get started.
+So instead of just reading benchmarks online, I decided to test things myself and document what really changes when you move from API-based models to local ones.
 
-But there are real reasons to run models locally:
+---
 
-- **Privacy** — Your data never leaves your machine. Critical for medical, legal, or proprietary data.
-- **Cost at scale** — API costs compound. At high volume, local inference pays for itself quickly.
-- **Latency** — No network round-trip. For real-time applications, this matters.
-- **Control** — No rate limits, no downtime dependency, no sudden price changes.
-- **On-premises deployment** — Many enterprises simply cannot send data to external APIs.
+## Why I Even Tried This
 
-## The Hardware Reality
+Most tutorials make local LLMs sound like a perfect replacement. But in reality, the question is not:
 
-Let's be honest about what you need.
+"Can you run LLMs locally?"
 
-For 7B parameter models (Mistral 7B, LLaMA 3 8B), you need at minimum 8GB VRAM. These run well on a single consumer GPU like an RTX 3060 or 4060.
+It's:
 
-For 13B models, you're looking at 16GB VRAM — RTX 3090, 4080, or better.
+"Should you run them locally for your use case?"
 
-For 70B models, you either need multiple high-end GPUs or you run them quantized (4-bit) on a single 24GB card like an RTX 3090 or 4090. Quality drops somewhat but remains impressive.
+That's what I wanted to answer.
 
-CPU inference is possible but slow — useful for experimentation, not production.
+---
 
-## Tools That Actually Work
+## Setup I Used
 
-**Ollama** is the easiest starting point. One command to download and run a model:
+### Local Model Setup
+
+- Tool: Ollama
+- Model: LLaMA 3 (8B)
+- Hardware: CPU-based (no GPU)
+- RAM: 16GB
 
 ```bash
-ollama run llama3.2
-ollama run mistral
-ollama run qwen2.5-coder
+ollama run llama3
 ```
 
-It exposes an OpenAI-compatible API locally, so you can swap it in anywhere you're already using the OpenAI SDK.
+### API Setup (Gemini - Free Tier)
 
-**llama.cpp** is for when you want maximum control and performance. It's a C++ inference engine that runs quantized models efficiently on CPU and GPU. Steep learning curve, excellent results.
+```bash
+pip install google-generativeai
+```
 
-**vLLM** is the production-grade option. It implements PagedAttention for high-throughput inference, supports continuous batching, and is what many companies use for self-hosted deployments.
+```python
+import google.generativeai as genai
 
-## Quantization: The Key Concept
+genai.configure(api_key="YOUR_GEMINI_API_KEY")
+model = genai.GenerativeModel("gemini-pro")
+response = model.generate_content("Explain what RAG is in simple terms")
+print(response.text)
+```
 
-A 70B parameter model in full 16-bit precision requires ~140GB of memory. That's not feasible for most setups.
+---
 
-Quantization reduces precision — from 16-bit floats to 4-bit integers — shrinking the model to ~35GB with minimal quality loss. GGUF format (used by llama.cpp and Ollama) makes this straightforward.
+## What I Tested
 
-The naming convention: `Q4_K_M` means 4-bit quantization, K-quant method, medium size. Higher Q = better quality, more memory.
+Same prompts for both local and API across four areas: basic Q&A, code generation, long responses, and latency.
 
-## A Realistic Benchmark
+---
 
-On an RTX 4090 (24GB VRAM):
-- LLaMA 3 8B (Q8): ~80 tokens/second
-- Mistral 7B (Q4_K_M): ~120 tokens/second  
-- LLaMA 3 70B (Q4_K_M): ~25 tokens/second
+## 1. Response Speed
 
-For reference, GPT-4 through the API typically delivers 30-60 tokens/second depending on load.
+**Local (CPU):** First response takes 8–15 seconds. Streaming is slow but steady. Feels laggy for longer prompts.
 
-Local 7B models at 120 tokens/second feel fast. 70B at 25 tokens/second is usable for most applications.
+**Gemini API:** Response in 1–3 seconds. Much smoother.
 
-## When Not to Run Locally
+Local models feel like you're "waiting for thinking." APIs feel instant.
 
-Local inference makes sense when you have the hardware and the use case justifies it. But for prototyping, experimentation, or low-volume applications, API access is usually faster and cheaper to start with.
+---
 
-The right answer depends on your scale, your data sensitivity, and your infrastructure constraints. Local LLMs are a tool — a powerful one — not a universal replacement for cloud APIs.
+## 2. Output Quality
+
+**Prompt:** "Write a Python function to detect palindrome"
+
+Local output was correct but slightly less structured, sometimes missing edge cases. Gemini output was cleaner with better formatting:
+
+```python
+def is_palindrome(s):
+    s = str(s)
+    return s == s[::-1]
+```
+
+Local models are decent. APIs are more reliable for production-quality output.
+
+---
+
+## 3. Handling Complex Prompts
+
+**Prompt:** "Explain RAG with architecture and use cases"
+
+Local gives a reasonable explanation but sometimes lacks depth and repeats phrases. Gemini produces a more structured, complete answer with better flow.
+
+---
+
+## 4. Cost
+
+- **Local:** ₹0 per request, one-time hardware cost
+- **Gemini free tier:** Free with rate limits
+- **Paid APIs:** Cost scales with usage
+
+If you're experimenting → local is great. If you're building a product → API reliability matters more than cost at early stages.
+
+---
+
+## 5. Privacy & Control
+
+This is where local models win clearly. Your data never leaves your machine. With APIs, every request goes to external servers — a real constraint for sensitive data.
+
+---
+
+## Where Local LLMs Actually Make Sense
+
+After testing, local models are not replacements — they're tools for specific scenarios.
+
+Use local LLMs when you care about privacy, need offline AI, are experimenting, or building internal tools where data sensitivity is high.
+
+---
+
+## Where APIs Still Win
+
+Use APIs when you need reliability, better response quality, speed, or are building user-facing applications where consistency matters.
+
+---
+
+## The Real Problem No One Talks About
+
+Running locally is not just "run and done." You deal with model size vs RAM constraints, slow inference on CPU, setup issues, and inconsistent outputs. This is where most tutorials stop — but this is where real work starts.
+
+---
+
+## What I'd Do Now
+
+Instead of choosing one, combine both:
+
+- **Local model** → experimentation, offline tools, privacy-sensitive workflows
+- **API** → production, better UX, anything user-facing
+
+This hybrid approach makes the most sense for most teams.
+
+---
+
+## Final Thoughts
+
+Before trying this, I thought local LLMs might replace APIs completely. Now I think they're more like a sandbox, a control layer, and a privacy-first option — not a full replacement. APIs are still faster, more reliable, and easier to scale.
+
+Don't overcomplicate it. Try Ollama locally, use the Gemini free API, compare yourself. That's the best way to actually understand the tradeoff.
+
+I'll be experimenting more with quantized models, GPU setups, and hybrid pipelines. If I find something interesting, I'll write about it.

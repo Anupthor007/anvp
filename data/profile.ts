@@ -1,12 +1,8 @@
-// ============================================================
-// data/profile.ts — SINGLE SOURCE OF TRUTH
-// Edit only this file to update the entire website.
-// ============================================================
 
 export const profile = {
   name: "Anup Thorat",
   title: "AI Engineer | Data Analyst | ML Engineer",
-  email: "", // add your email here if you want it shown
+  email: "anupthorat060@gmail.com", 
 
   short_bio:
     "Final-year B.Tech student in Artificial Intelligence and Data Science with hands-on experience in building AI-powered applications, backend systems, and data-driven solutions. Passionate about Generative AI, agent-based systems, and solving real-world problems using machine learning and automation.",
